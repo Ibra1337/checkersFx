@@ -1,6 +1,7 @@
 package Client;
 
 import GUI.CheckersBoardView;
+import Server.IGame;
 import Server.IMatchmaking;
 import resources.IPlayer;
 import resources.Player;
@@ -21,17 +22,18 @@ public class Client {
             Registry reg = LocateRegistry.getRegistry("192.168.220.1" , 1099);
             IPlayer p = new Player(1);
             IMatchmaking mm = (IMatchmaking) reg.lookup("mm");
-            String s = "kupa";
-
+            System.out.println(p.getId());
             mm.addPlayer(p);
             p  = (IPlayer) reg.lookup(p.getId().toString());
-            System.out.println(p.inGAme());
+            System.out.println(p.getId());
             while (!p.inGAme())
             {
+                p  = (IPlayer) reg.lookup(p.getId().toString());
                 Thread.sleep(1000);
                 System.out.println("w8 for oponent");
             }
-            CheckersBoardView view = new CheckersBoardView();
+            IGame game = (IGame) reg.lookup(p.getGameId().toString());
+            CheckersBoardView view = new CheckersBoardView(game.getBl());
             view.la();
         } catch (RemoteException e) {
             throw new RuntimeException(e);

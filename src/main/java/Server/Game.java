@@ -4,21 +4,22 @@ import resources.BoardLogic;
 import resources.IPlayer;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 public class Game implements Serializable , IGame {
 
     private IPlayer blackPlayer;
     private IPlayer whitePlayer;
     private BoardLogic bl;
+    private UUID gameId;
 
 
     public Game(IPlayer blackPlayer, IPlayer whitePlayer) {
         this.blackPlayer = blackPlayer;
         this.whitePlayer = whitePlayer;
-        this.blackPlayer.setInGame();
-        this.whitePlayer.setInGame();
-        System.out.println(blackPlayer.inGAme());
-        System.out.println(whitePlayer.inGAme());
+        gameId=UUID.randomUUID();
+        System.out.println(blackPlayer.getId().toString() + " ; "+blackPlayer.inGAme());
+        System.out.println(whitePlayer.getId().toString() + " : " + whitePlayer.inGAme());
         bl = new BoardLogic();
     }
 
@@ -30,6 +31,21 @@ public class Game implements Serializable , IGame {
 
     @Override
     public IPlayer getWhite() {
+        return whitePlayer;
+    }
+
+    @Override
+    public UUID getId() {
         return null;
+    }
+
+    @Override
+    public BoardLogic getBl() {
+        return bl;
+    }
+
+    public void updateBoard(BoardLogic bl )
+    {
+        this.bl = bl;
     }
 }

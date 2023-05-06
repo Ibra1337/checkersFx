@@ -13,7 +13,7 @@ class Server {
 
     public static void main(String[] args) {
 
-        List<Game> games = new LinkedList<>();
+        List<IGame> games = new LinkedList<>();
 
 
 

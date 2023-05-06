@@ -15,6 +15,10 @@ public class CheckersBoardView extends Application {
 
     BoardLogic bl = new BoardLogic();
 
+    public CheckersBoardView(BoardLogic bl) {
+        this.bl = bl;
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         displayBoard(primaryStage , bl.getBoard());

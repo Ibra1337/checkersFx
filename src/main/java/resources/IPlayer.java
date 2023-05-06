@@ -17,4 +17,8 @@ public interface IPlayer  extends Remote , Serializable {
 
     public UUID getId();
 
+    public UUID getGameId();
+
+    public void setGameId(UUID id);
+
 }

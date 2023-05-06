@@ -2,7 +2,7 @@ package resources;
 
 import java.util.*;
 
-public class BoardLogic  {
+public class BoardLogic implements IBoard {
 
 
     //0 = empty 1 = white 2 = black
@@ -10,7 +10,9 @@ public class BoardLogic  {
     int aliveWhite = 20;
     int aliveBlack = 20;
 
-    int PlayerRound =1;
+    int turn =1;
+
+    UUID gameId;
 
     int[][] board = new int[8][8];
 
@@ -35,6 +37,7 @@ public class BoardLogic  {
                 }
             }
         }
+        gameId = UUID.randomUUID();
     }
 
     public void disp ()
