@@ -22,12 +22,12 @@ public class Player implements IPlayer , Serializable {
     }
 
     @Override
-    public boolean inGAme() {
+    public synchronized boolean inGAme() {
         return inGame;
     }
 
     @Override
-    public void setInGame(boolean state) {
+    public synchronized void setInGame(boolean state) {
         inGame = state;
     }
 

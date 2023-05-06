@@ -12,6 +12,6 @@ public interface IPlayer  extends Remote , Serializable {
 
     public boolean inGAme();
 
-    public void setInGame(boolean state);
+    public void  setInGame(boolean state);
 
 }
