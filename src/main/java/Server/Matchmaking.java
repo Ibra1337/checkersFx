@@ -8,16 +8,13 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 public class Matchmaking implements IMatchmaking , Serializable {
 
     List<Game> games ;
-    LinkedList<IPlayer> blackQueue;
-    LinkedList<IPlayer> whiteQueue;
+    LinkedList<UUID> blackQueue;
+    LinkedList<UUID> whiteQueue;
     Registry reg ;
 
 
@@ -34,11 +31,11 @@ public class Matchmaking implements IMatchmaking , Serializable {
 
         reg.bind(player.getId().toString() , player);
         if (player.getColor() <0 )
-            blackQueue.add(player);
+            blackQueue.add(player.getId());
         else
-            whiteQueue.add(player);
+            whiteQueue.add(player.getId());
         if (blackQueue.size() >=1 && whiteQueue.size() >=1) {
-            games.add(new Game(blackQueue.poll(), whiteQueue.poll()));
+            games.add(new Game((IPlayer) reg.lookup(blackQueue.poll().toString()), (IPlayer) reg.lookup(whiteQueue.poll().toString())));
             System.out.println("game has been created: " +blackQueue.size() +";"+ whiteQueue.size());
         }
 
