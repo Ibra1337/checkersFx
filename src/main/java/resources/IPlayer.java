@@ -10,5 +10,8 @@ public interface IPlayer  extends Remote , Serializable {
 
     public int getColor() throws RemoteException;
 
+    public boolean inGAme();
+
+    public void setInGame(boolean state);
 
 }

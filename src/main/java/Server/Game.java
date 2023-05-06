@@ -15,6 +15,8 @@ public class Game implements Serializable , IGame {
     public Game(IPlayer blackPlayer, IPlayer whitePlayer) {
         this.blackPlayer = blackPlayer;
         this.whitePlayer = whitePlayer;
+        blackPlayer.setInGame(true);
+        whitePlayer.setInGame(true);
        bl = new BoardLogic();
     }
 
