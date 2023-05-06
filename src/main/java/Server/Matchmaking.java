@@ -46,6 +46,8 @@ public class Matchmaking implements IMatchmaking , Serializable {
             game.getBl().getBoard()[4][4] = 1;
             games.add(game);
             System.out.println("game has been created: " +blackQueue.size() +";"+ whiteQueue.size());
+
+
         }
 
     }

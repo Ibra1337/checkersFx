@@ -32,9 +32,11 @@ public class Client {
                 Thread.sleep(1000);
                 System.out.println("w8 for oponent");
             }
-            IGame game = (IGame) reg.lookup(p.getGameId().toString());
-            CheckersBoardView view = new CheckersBoardView(game.getBl());
-            view.la();
+            while (true) {
+                IGame game = (IGame) reg.lookup(p.getGameId().toString());
+                CheckersBoardView view = new CheckersBoardView(game, reg);
+                view.la();
+            }
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         } catch (NotBoundException e) {

@@ -1,5 +1,7 @@
 package GUI;
 
+import Server.Game;
+import Server.IGame;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
@@ -8,15 +10,33 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import resources.BoardLogic;
 
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
 public class CheckersBoardView extends Application {
 
     private final int BOARD_SIZE = 8;
     private final int TILE_SIZE = 50;
 
-    BoardLogic bl = new BoardLogic();
+
+    IGame game;
+    BoardLogic bl;
+    Registry registry;
 
     public CheckersBoardView(BoardLogic bl) {
         this.bl = bl;
+    }
+    public CheckersBoardView() throws RemoteException {
+        game = new Game(null,null);
+        bl = new BoardLogic();
+        registry = LocateRegistry.getRegistry();
+    };
+
+    public CheckersBoardView(IGame game , Registry reg) {
+        this.game = game;
+        this.registry = reg;
+        new CheckersBoardView(game.getBl());
     }
 
     @Override

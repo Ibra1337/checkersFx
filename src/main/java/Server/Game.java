@@ -36,7 +36,7 @@ public class Game implements Serializable , IGame {
 
     @Override
     public UUID getId() {
-        return null;
+        return gameId;
     }
 
     @Override
