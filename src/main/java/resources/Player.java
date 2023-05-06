@@ -1,11 +1,13 @@
 package resources;
 
 import java.io.Serializable;
+import java.util.UUID;
 
-public class Player implements IPlayer , Serializable {
+public class Player implements IPlayer  {
 
     private int color;
     private boolean inGame = false;
+    private UUID id = UUID.randomUUID();
 
     public Player(int color) {
         this.color = color;
@@ -27,9 +29,12 @@ public class Player implements IPlayer , Serializable {
     }
 
     @Override
-    public synchronized void setInGame(boolean state) {
-        inGame = state;
+    public synchronized void setInGame() {
+        this.inGame = true;
     }
 
-
+    @Override
+    public UUID getId() {
+        return id;
+    }
 }

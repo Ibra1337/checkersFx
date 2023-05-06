@@ -18,9 +18,9 @@ class Server {
 
 
         try {
-            IMatchmaking mm = new Matchmaking(games);
-            IMatchmaking mmstub = (IMatchmaking) UnicastRemoteObject.exportObject(mm,0);
             Registry reg = LocateRegistry.createRegistry(1099);
+            IMatchmaking mm = new Matchmaking(games , reg);
+            IMatchmaking mmstub = (IMatchmaking) UnicastRemoteObject.exportObject(mm,0);
 
             reg.rebind("mm",mmstub);
         }catch (Exception e)
