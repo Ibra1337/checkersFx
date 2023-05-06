@@ -2,6 +2,7 @@ package GUI;
 
 import Server.Game;
 import Server.IGame;
+import Server.IMatchmaking;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
@@ -9,7 +10,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import resources.BoardLogic;
+import resources.IPlayer;
+import resources.Player;
 
+import java.rmi.AlreadyBoundException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -22,20 +27,45 @@ public class CheckersBoardView extends Application {
 
     IGame game;
     BoardLogic bl;
-    Registry registry;
+    Registry reg;
 
     public CheckersBoardView(BoardLogic bl) {
         this.bl = bl;
     }
     public CheckersBoardView() throws RemoteException {
-        game = new Game(null,null);
-        bl = new BoardLogic();
-        registry = LocateRegistry.getRegistry();
+        try {
+            reg = LocateRegistry.getRegistry("192.168.220.1" , 1099);
+            IPlayer p = new Player(1);
+            IMatchmaking mm = (IMatchmaking) reg.lookup("mm");
+            System.out.println(p.getId());
+            mm.addPlayer(p);
+            p  = (IPlayer) reg.lookup(p.getId().toString());
+            System.out.println(p.getId());
+            while (!p.inGAme())
+            {
+                p  = (IPlayer) reg.lookup(p.getId().toString());
+                Thread.sleep(1000);
+                System.out.println("w8 for oponent");
+            }
+            game = (IGame) reg.lookup(p.getGameId().toString());
+            bl = game.getBl();
+
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        } catch (NotBoundException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (AlreadyBoundException e) {
+            e.printStackTrace();
+        }
     };
+
+
 
     public CheckersBoardView(IGame game , Registry reg) {
         this.game = game;
-        this.registry = reg;
+        this.reg = reg;
         new CheckersBoardView(game.getBl());
     }
 
