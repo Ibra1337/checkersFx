@@ -10,6 +10,8 @@ import java.util.UUID;
 
 public interface IGame extends Remote , Serializable {
 
+    static final long serialVersionUID = -4526579883456479758L;
+
     IPlayer getBlack() throws RemoteException;
 
     IPlayer getWhite() throws RemoteException;
