@@ -2,7 +2,7 @@ package resources;
 
 import java.util.*;
 
-public class BoardLogic {
+public class BoardLogic  {
 
 
     //0 = empty 1 = white 2 = black

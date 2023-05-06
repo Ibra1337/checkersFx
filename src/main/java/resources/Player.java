@@ -1,6 +1,8 @@
 package resources;
 
-public class Player implements IPlayer {
+import java.io.Serializable;
+
+public class Player implements IPlayer , Serializable {
 
     int color;
 

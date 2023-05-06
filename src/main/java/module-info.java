@@ -6,4 +6,5 @@ module com.example.checkersfx {
 
     opens GUI to javafx.fxml;
     exports GUI;
+    exports Server;
 }

@@ -2,26 +2,27 @@ package Server;
 
 import resources.IPlayer;
 
+import java.io.Serializable;
+import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-public class Matchmaking implements IMatchmaking {
+public class Matchmaking implements IMatchmaking , Serializable {
 
     List<Game> games ;
-    Queue<IPlayer> blackQueue;
-    Queue<IPlayer> whiteQueue;
+    LinkedList<IPlayer> blackQueue;
+    LinkedList<IPlayer> whiteQueue;
 
 
     public Matchmaking(List<Game> games) {
-        blackQueue = new PriorityQueue<>();
-        whiteQueue = new PriorityQueue<>();
+        blackQueue = new LinkedList<>();
+        whiteQueue = new LinkedList<>();
         this.games = games;
     }
     @Override
-    public void addPlayer(IPlayer player)
-    {
+    public void addPlayer(IPlayer player) throws RemoteException {
         System.out.println("ading player");
         if (player.getColor() <0 )
             blackQueue.add(player);

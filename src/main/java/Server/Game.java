@@ -3,7 +3,9 @@ package Server;
 import resources.BoardLogic;
 import resources.IPlayer;
 
-public class Game {
+import java.io.Serializable;
+
+public class Game implements Serializable , IGame {
 
     private IPlayer blackPlayer;
     private IPlayer whitePlayer;
@@ -17,4 +19,13 @@ public class Game {
     }
 
 
+    @Override
+    public IPlayer getBlack() {
+        return blackPlayer;
+    }
+
+    @Override
+    public IPlayer getWhite() {
+        return null;
+    }
 }

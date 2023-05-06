@@ -1,12 +1,14 @@
 package resources;
 
+import java.io.Serializable;
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 
-public interface IPlayer  extends Remote {
+public interface IPlayer  extends Remote , Serializable {
 
-    public void setColor(int color);
+    public void setColor(int color) throws RemoteException;
 
-    public int getColor();
+    public int getColor() throws RemoteException;
 
 
 }
