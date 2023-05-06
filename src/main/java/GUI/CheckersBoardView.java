@@ -59,6 +59,7 @@ public class CheckersBoardView extends Application {
         } catch (AlreadyBoundException e) {
             e.printStackTrace();
         }
+
     };
 
 
@@ -110,7 +111,13 @@ public class CheckersBoardView extends Application {
                     }
                     CircleButton b = new CircleButton( "" ,bg , checkerColor , i , j);
                     if (Math.abs(board[i][j] )<=2 )b.setOnAction( e -> test(primaryStage ,b ) );
-                    if (board[i][j] == 3) b.setOnAction(e ->  playerMove(primaryStage , performer, b) ); ;
+                    if (board[i][j] == 3) b.setOnAction(e -> {
+                        try {
+                            playerMove(primaryStage , performer, b);
+                        } catch (RemoteException ex) {
+                            ex.printStackTrace();
+                        }
+                    }); ;
                     root.add( b,j ,i );
                 } else {
                     Rectangle rect = new Rectangle(TILE_SIZE, TILE_SIZE);
@@ -169,8 +176,7 @@ public class CheckersBoardView extends Application {
     }
 
 
-    public void playerMove(Stage stage , CircleButton curr , CircleButton dest)
-    {
+    public void playerMove(Stage stage , CircleButton curr , CircleButton dest) throws RemoteException {
         System.out.println("move");
         System.out.println(curr.getX() +":"+ curr.getY());
         System.out.println(dest.getX()+":" + curr.getY());
@@ -179,6 +185,8 @@ public class CheckersBoardView extends Application {
         System.out.println("af");
         bl.disp();
         clrBoard();
+        game.setBL(bl);
+        reg.rebind(game.getId().toString() , game);
         displayBoard(stage,bl.getBoard());
 
     }

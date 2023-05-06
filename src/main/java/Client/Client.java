@@ -20,6 +20,7 @@ public class Client {
 
         try {
             CheckersBoardView bw = new CheckersBoardView();
+            bw.la();
         } catch (RemoteException e) {
             e.printStackTrace();
         }

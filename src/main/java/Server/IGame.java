@@ -16,6 +16,8 @@ public interface IGame extends Remote , Serializable {
 
     BoardLogic getBl();
 
+    public void setBL(BoardLogic bl);
+
     UUID getId();
 
 

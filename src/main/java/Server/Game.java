@@ -39,6 +39,10 @@ public class Game implements Serializable , IGame {
         return gameId;
     }
 
+    public void setBL(BoardLogic bl) {
+        this.bl = bl;
+    }
+
     @Override
     public BoardLogic getBl() {
         return bl;
