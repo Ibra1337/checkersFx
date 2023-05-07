@@ -85,16 +85,23 @@ public class CheckersBoardView extends Application {
                     bl.getBoard()[i][j] = 0;
     }
 
-    public void test(Stage stage , CircleButton b )
-    {
+    public void test(Stage stage , CircleButton b ) throws RemoteException, NotBoundException {
         System.out.println("click");
         int[] p = {b.getX(), b.getY()};
-        bl.disp();
+        IGame g = (IGame) reg.lookup(game.getId() );
+        System.out.println("=======================serv======================");
+        g.getBl().disp();
         //make it displaying not remove ch
         clrBoard();
         displayBoard(stage , bl.putOnBoardAvMoves(p) , b);
     }
 
+    /**
+     * displays board after clicking on piece
+     * @param primaryStage
+     * @param board
+     * @param performer
+     */
     public void displayBoard(Stage primaryStage , int[][] board , CircleButton performer)
     {
         GridPane root = new GridPane();
@@ -112,7 +119,15 @@ public class CheckersBoardView extends Application {
                         bg = Color.BLUE;
                     }
                     CircleButton b = new CircleButton( "" ,bg , checkerColor , i , j);
-                    if (Math.abs(board[i][j] )<=2 )b.setOnAction( e -> test(primaryStage ,b ) );
+                    if (Math.abs(board[i][j] )<=2 )b.setOnAction( e -> {
+                        try {
+                            test(primaryStage ,b );
+                        } catch (RemoteException ex) {
+                            ex.printStackTrace();
+                        } catch (NotBoundException ex) {
+                            ex.printStackTrace();
+                        }
+                    });
                     if (board[i][j] == 3) b.setOnAction(e -> {
                         try {
                             playerMove(primaryStage , performer, b);
@@ -141,6 +156,11 @@ public class CheckersBoardView extends Application {
         primaryStage.show();
     }
 
+    /**
+     * displays board at the begonning of round
+     * @param primaryStage
+     * @param board
+     */
     public void displayBoard(Stage primaryStage , int[][] board)
     {
         GridPane root = new GridPane();
@@ -158,7 +178,15 @@ public class CheckersBoardView extends Application {
                         bg = Color.BLUE;
                     }
                     CircleButton b = new CircleButton( "" ,bg , checkerColor , i , j);
-                    if (Math.abs(board[i][j] )<=2 )b.setOnAction( e -> test(primaryStage ,b ) );
+                    if (Math.abs(board[i][j] )<=2 )b.setOnAction( e -> {
+                        try {
+                            test(primaryStage ,b );
+                        } catch (RemoteException ex) {
+                            ex.printStackTrace();
+                        } catch (NotBoundException ex) {
+                            ex.printStackTrace();
+                        }
+                    });
                     if (board[i][j] == 3) ;
                     root.add( b,j ,i );
                 } else {
