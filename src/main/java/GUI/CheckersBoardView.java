@@ -48,6 +48,7 @@ public class CheckersBoardView extends Application {
                 Thread.sleep(1000);
                 System.out.println("w8 for oponent");
             }
+            System.out.println("game found");
             game = (IGame) reg.lookup(p.getGameId().toString());
             bl = game.getBl();
 

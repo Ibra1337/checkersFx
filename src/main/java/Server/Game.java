@@ -11,13 +11,13 @@ public class Game implements   IGame {
     private IPlayer blackPlayer;
     private IPlayer whitePlayer;
     private BoardLogic bl;
-    private UUID gameId;
+    private String gameId;
 
 
     public Game(IPlayer blackPlayer, IPlayer whitePlayer) {
         this.blackPlayer = blackPlayer;
         this.whitePlayer = whitePlayer;
-        gameId=UUID.randomUUID();
+        gameId=UUID.randomUUID().toString();
         System.out.println(blackPlayer.getId().toString() + " ; "+blackPlayer.inGAme());
         System.out.println(whitePlayer.getId().toString() + " : " + whitePlayer.inGAme());
         bl = new BoardLogic();
@@ -35,7 +35,7 @@ public class Game implements   IGame {
     }
 
     @Override
-    public UUID getId() {
+    public String getId() {
         return gameId;
     }
 

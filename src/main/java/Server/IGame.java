@@ -20,7 +20,7 @@ public interface IGame extends Remote , Serializable {
 
     public void setBL(BoardLogic bl);
 
-    UUID getId();
+    String getId();
 
 
 }
