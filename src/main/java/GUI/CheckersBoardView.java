@@ -20,7 +20,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
-public class CheckersBoardView extends Application {
+public class CheckersBoardView extends Scene {
 
     private final int BOARD_SIZE = 8;
     private final int TILE_SIZE = 50;
@@ -32,7 +32,9 @@ public class CheckersBoardView extends Application {
     int player =1;
 
 
-    public CheckersBoardView() throws RemoteException {
+    public CheckersBoardView(Stage stage , int player) throws RemoteException {
+        super( new GridPane());
+        this.player = player;
         try {
             reg = LocateRegistry.getRegistry("192.168.220.1" , 1099);
             IPlayer p = new Player(player);
@@ -50,7 +52,7 @@ public class CheckersBoardView extends Application {
             System.out.println("game found");
             game = (IGame) reg.lookup(p.getGameId());
             BoardLogic bl = game.getBl();
-
+            displayBoard(stage , bl.getBoard());
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         } catch (NotBoundException e) {
@@ -65,47 +67,6 @@ public class CheckersBoardView extends Application {
 
 
 
-    public CheckersBoardView(IGame game , Registry reg) throws RemoteException {
-        this.game = game;
-        this.reg = reg;
-    }
-
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        BoardLogic bl = game.getBl();
-        displayBoard(primaryStage , bl.getBoard());
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-            while (!Thread.interrupted())
-            {
-                try {
-                    IGame g = (IGame) reg.lookup(game.getId());
-                    if (g.getPlayersRound() == player)
-                    {
-                        displayBoard(primaryStage , g.getBl().getBoard());
-                        while (g.getPlayersRound()!=player)
-                        {
-                            Thread.sleep(1000);
-                            System.out.println("w8 for opponent movment");
-                        }
-                    }else
-                    {
-                        System.out.println("opponents move");
-                    }
-                    Thread.sleep(1000);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                } catch (NotBoundException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-            }
-            }
-        });
-    }
 
     private void clrBoard() throws RemoteException {
         BoardLogic bl = game.getBl();
@@ -178,6 +139,7 @@ public class CheckersBoardView extends Application {
                     root.add(rect, j, i);
                 }
             }
+
         }
 
         Scene scene = new Scene(root, TILE_SIZE * BOARD_SIZE, TILE_SIZE * BOARD_SIZE);
@@ -257,11 +219,6 @@ public class CheckersBoardView extends Application {
         reg.rebind(game.getId() , game);
         displayBoard(stage,bl.getBoard());
 
-    }
-
-    public void la ()
-    {
-        launch();
     }
 
 
