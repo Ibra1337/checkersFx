@@ -153,6 +153,19 @@ public class CheckersBoardView extends Scene {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Checkers Board");
         primaryStage.show();
+
+        if (game.getPlayersRound() != player)
+        {
+            try {
+                waitForOpponentsMove(game,reg);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (NotBoundException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -198,24 +211,26 @@ public class CheckersBoardView extends Scene {
                     root.add(rect, j, i);
                 }
             }
-            if (game.getPlayersRound() != player)
-            {
-                try {
-                    waitForOpponentsMove(game,reg);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (NotBoundException e) {
-                    e.printStackTrace();
-                }
-            }
+
         }
 
         Scene scene = new Scene(root, TILE_SIZE * BOARD_SIZE, TILE_SIZE * BOARD_SIZE);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Checkers Board");
         primaryStage.show();
+
+        if (game.getPlayersRound() != player)
+        {
+            try {
+                waitForOpponentsMove(game,reg);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (NotBoundException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 
