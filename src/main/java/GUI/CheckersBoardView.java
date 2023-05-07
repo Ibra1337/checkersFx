@@ -1,9 +1,7 @@
 package GUI;
 
-import Server.Game;
 import Server.IGame;
 import Server.IMatchmaking;
-import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -16,9 +14,7 @@ import resources.Player;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
 
 public class CheckersBoardView extends Scene {
 
@@ -26,29 +22,39 @@ public class CheckersBoardView extends Scene {
     private final int TILE_SIZE = 50;
 
 
-    IGame game;
 
+    IGame game;
     Registry reg;
     int player =1;
 
 
-    public CheckersBoardView(Stage stage , int player) throws RemoteException {
+    public void waitForOpponent(IPlayer p ) throws NotBoundException, RemoteException, InterruptedException {
+        p  = (IPlayer) reg.lookup(p.getId());
+        System.out.println(p.getId());
+        while (!p.inGAme())
+        {
+            p  = (IPlayer) reg.lookup(p.getId());
+            Thread.sleep(1000);
+            System.out.println("w8 for oponent");
+        }
+    }
+
+    public IGame getGame() {
+        return game;
+    }
+
+    public CheckersBoardView(Stage stage , Registry reg ,int player) throws RemoteException {
         super( new GridPane());
         this.player = player;
         try {
-            reg = LocateRegistry.getRegistry("192.168.220.1" , 1099);
+            this.reg = reg;
             IPlayer p = new Player(player);
             IMatchmaking mm = (IMatchmaking) reg.lookup("mm");
             System.out.println(p.getId());
             mm.addPlayer(p);
-            p  = (IPlayer) reg.lookup(p.getId());
-            System.out.println(p.getId());
-            while (!p.inGAme())
-            {
-                p  = (IPlayer) reg.lookup(p.getId());
-                Thread.sleep(1000);
-                System.out.println("w8 for oponent");
-            }
+
+            waitForOpponent(p);
+
             System.out.println("game found");
             game = (IGame) reg.lookup(p.getGameId());
             BoardLogic bl = game.getBl();
