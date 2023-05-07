@@ -27,12 +27,10 @@ public class CheckersBoardView extends Application {
 
 
     IGame game;
-    BoardLogic bl;
+
     Registry reg;
     int player =1;
-    public CheckersBoardView(BoardLogic bl) {
-        this.bl = bl;
-    }
+
 
     public CheckersBoardView() throws RemoteException {
         try {
@@ -51,7 +49,7 @@ public class CheckersBoardView extends Application {
             }
             System.out.println("game found");
             game = (IGame) reg.lookup(p.getGameId());
-            bl = game.getBl();
+            BoardLogic bl = game.getBl();
 
         } catch (RemoteException e) {
             throw new RuntimeException(e);
@@ -70,11 +68,11 @@ public class CheckersBoardView extends Application {
     public CheckersBoardView(IGame game , Registry reg) throws RemoteException {
         this.game = game;
         this.reg = reg;
-        new CheckersBoardView(game.getBl());
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        BoardLogic bl = game.getBl();
         displayBoard(primaryStage , bl.getBoard());
         Thread t = new Thread(new Runnable() {
             @Override
@@ -109,8 +107,8 @@ public class CheckersBoardView extends Application {
         });
     }
 
-    private void clrBoard()
-    {
+    private void clrBoard() throws RemoteException {
+        BoardLogic bl = game.getBl();
         for (int i = 0 ; i < 8;i++)
             for (int j=0 ; j< 8 ;j++)
                 if (bl.getBoard()[i][j]==3)
@@ -125,7 +123,7 @@ public class CheckersBoardView extends Application {
         g.getBl().disp();
         //make it displaying not remove ch
         clrBoard();
-        displayBoard(stage , bl.putOnBoardAvMoves(p) , b);
+        displayBoard(stage , g.getBl().putOnBoardAvMoves(p) , b);
     }
 
     /**
@@ -137,7 +135,7 @@ public class CheckersBoardView extends Application {
     public void displayBoard(Stage primaryStage , int[][] board , CircleButton performer)
     {
         GridPane root = new GridPane();
-        for (int i = 0; i < bl.getBoard().length ; i++) {
+        for (int i = 0; i < board.length ; i++) {
             for (int j = 0; j < 8; j++) {
                 Color bg = Color.GRAY;
                 if (board[i][j] != 0) {
@@ -193,9 +191,9 @@ public class CheckersBoardView extends Application {
      * @param primaryStage
      * @param board
      */
-    public void displayBoard(Stage primaryStage , int[][] board)
-    {
+    public void displayBoard(Stage primaryStage , int[][] board) throws RemoteException {
         GridPane root = new GridPane();
+        BoardLogic bl = game.getBl();
         for (int i = 0; i < bl.getBoard().length ; i++) {
             for (int j = 0; j < 8; j++) {
                 Color bg = Color.GRAY;
@@ -242,6 +240,7 @@ public class CheckersBoardView extends Application {
 
     public void playerMove(Stage stage , CircleButton curr , CircleButton dest) throws RemoteException, NotBoundException {
         game = (IGame) reg.lookup(game.getId());
+        BoardLogic bl = game.getBl();
         displayBoard(stage ,game.getBl().getBoard() );
         System.out.println("move");
         System.out.println(curr.getX() +":"+ curr.getY());
