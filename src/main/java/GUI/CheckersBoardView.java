@@ -27,7 +27,7 @@ public class CheckersBoardView extends Scene {
     Registry reg;
     int player =1;
     Stage stage;
-
+    private boolean movePerformed = false;
 
 
     public CheckersBoardView(Stage stage , Registry reg ,int player) throws RemoteException {
@@ -35,6 +35,7 @@ public class CheckersBoardView extends Scene {
         super( new GridPane());
         this.stage = stage;
         this.player = player;
+
         try {
             this.reg = reg;
             IPlayer p = new Player(player);
@@ -126,7 +127,6 @@ public class CheckersBoardView extends Scene {
                     if (board[i][j] == 3) b.setOnAction(e -> {
                         try {
                             playerMove(primaryStage , performer, b);
-                            waitForOpponentsMove(game,reg);
                         } catch (RemoteException ex) {
                             ex.printStackTrace();
                         } catch (NotBoundException ex) {
@@ -144,6 +144,18 @@ public class CheckersBoardView extends Scene {
                         rect.setFill(Color.BLACK);
                     }
                     root.add(rect, j, i);
+                }
+            }
+            if (movePerformed)
+            {
+                try {
+                    waitForOpponentsMove(game,reg);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (NotBoundException e) {
+                    e.printStackTrace();
                 }
             }
 
@@ -225,6 +237,7 @@ public class CheckersBoardView extends Scene {
         game.playerRoundChange();
         System.out.println("Waiting for move from "+ game.getPlayersRound() );
         reg.rebind(game.getId() , game);
+        movePerformed = true;
         displayBoard(stage,bl.getBoard());
 
 
@@ -237,6 +250,7 @@ public class CheckersBoardView extends Scene {
             Thread.sleep(1000);
             game = (IGame) reg.lookup(game.getId());
         }
+        movePerformed = false;
         System.out.println("opponent performed movelogeexit" +
                 "");
         displayBoard(stage,game.getBl().getBoard());
