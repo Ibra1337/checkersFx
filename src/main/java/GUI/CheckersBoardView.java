@@ -76,7 +76,26 @@ public class CheckersBoardView extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         displayBoard(primaryStage , bl.getBoard());
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+            while (!Thread.interrupted())
+            {
+                try {
+                    IGame g = (IGame) reg.lookup(game.getId());
+                    if (g.getPlayersRound() == player)
+                    {
+                        displayBoard(primaryStage , g.getBl().getBoard());
+                    }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                } catch (NotBoundException e) {
+                    e.printStackTrace();
+                }
 
+            }
+            }
+        });
     }
 
     private void clrBoard()
