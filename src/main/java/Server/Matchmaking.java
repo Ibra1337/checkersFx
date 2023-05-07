@@ -14,8 +14,8 @@ import java.util.*;
 public class Matchmaking implements IMatchmaking , Serializable {
 
     List<IGame> games ;
-    LinkedList<UUID> blackQueue;
-    LinkedList<UUID> whiteQueue;
+    LinkedList<String> blackQueue;
+    LinkedList<String> whiteQueue;
     Registry reg ;
 
 

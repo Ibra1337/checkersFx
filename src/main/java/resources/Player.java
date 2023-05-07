@@ -7,8 +7,8 @@ public class Player implements IPlayer  {
 
     private int color;
     private boolean inGame = false;
-    private UUID id = UUID.randomUUID();
-    private UUID gameId ;
+    private String id = UUID.randomUUID().toString();
+    private String gameId ;
     public Player(int color) {
         this.color = color;
     }
@@ -35,17 +35,17 @@ public class Player implements IPlayer  {
 
 
     @Override
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
     @Override
-    public UUID getGameId() {
+    public String  getGameId() {
         return gameId;
     }
 
     @Override
-    public void setGameId(UUID id) {
+    public void setGameId(String id) {
         gameId = id;
     }
 }
