@@ -26,11 +26,14 @@ public class CheckersBoardView extends Scene {
 
     Registry reg;
     int player =1;
+    Stage stage;
 
 
 
     public CheckersBoardView(Stage stage , Registry reg ,int player) throws RemoteException {
+
         super( new GridPane());
+        this.stage = stage;
         this.player = player;
         try {
             this.reg = reg;
@@ -65,7 +68,9 @@ public class CheckersBoardView extends Scene {
     };
 
 
-
+    public Stage getStage() {
+        return stage;
+    }
 
     private void clrBoard() throws RemoteException {
         BoardLogic bl = game.getBl();
@@ -199,7 +204,7 @@ public class CheckersBoardView extends Scene {
     }
 
 
-    public void playerMove(Stage stage , CircleButton curr , CircleButton dest) throws RemoteException, NotBoundException {
+    public void playerMove(Stage stage , CircleButton curr , CircleButton dest) throws RemoteException, NotBoundException, InterruptedException {
         game = (IGame) reg.lookup(game.getId());
         BoardLogic bl = game.getBl();
         displayBoard(stage ,game.getBl().getBoard() );
@@ -215,11 +220,28 @@ public class CheckersBoardView extends Scene {
         System.out.println("==================NewBL===================");
         game.getBl().disp();
         game.playerRoundChange();
+        System.out.println("Waiting for move from "+ game.getPlayersRound() );
         reg.rebind(game.getId() , game);
         displayBoard(stage,bl.getBoard());
+
+        waitForOpponentsMove(game,reg);
 
     }
 
 
+    public void waitForOpponentsMove(IGame game , Registry reg) throws RemoteException, InterruptedException, NotBoundException {
+        while (game.getPlayersRound() != player)
+        {
+            Thread.sleep(1000);
+            game = (IGame) reg.lookup(game.getId());
+        }
+        System.out.println("opponent performed movelogeexit" +
+                "");
+        displayBoard(stage,game.getBl().getBoard());
 
+    }
+
+    public IGame getGame() {
+        return game;
+    }
 }
