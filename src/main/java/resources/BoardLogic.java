@@ -12,7 +12,7 @@ public class BoardLogic implements IBoard {
 
     int turn =1;
 
-    UUID gameId;
+    String gameId;
 
     int[][] board = new int[8][8];
 
@@ -37,7 +37,7 @@ public class BoardLogic implements IBoard {
                 }
             }
         }
-        gameId = UUID.randomUUID();
+        gameId = UUID.randomUUID().toString();
     }
 
     public void disp ()

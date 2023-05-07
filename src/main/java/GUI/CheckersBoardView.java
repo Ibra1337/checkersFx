@@ -40,16 +40,16 @@ public class CheckersBoardView extends Application {
             IMatchmaking mm = (IMatchmaking) reg.lookup("mm");
             System.out.println(p.getId());
             mm.addPlayer(p);
-            p  = (IPlayer) reg.lookup(p.getId().toString());
+            p  = (IPlayer) reg.lookup(p.getId());
             System.out.println(p.getId());
             while (!p.inGAme())
             {
-                p  = (IPlayer) reg.lookup(p.getId().toString());
+                p  = (IPlayer) reg.lookup(p.getId());
                 Thread.sleep(1000);
                 System.out.println("w8 for oponent");
             }
             System.out.println("game found");
-            game = (IGame) reg.lookup(p.getGameId().toString());
+            game = (IGame) reg.lookup(p.getGameId());
             bl = game.getBl();
 
         } catch (RemoteException e) {
@@ -189,7 +189,7 @@ public class CheckersBoardView extends Application {
         clrBoard();
         game.setBL(bl);
         IGame gameStub = (IGame) UnicastRemoteObject.exportObject(game,0);
-        reg.rebind(game.getId().toString() , game);
+        reg.rebind(game.getId() , game);
         displayBoard(stage,bl.getBoard());
 
     }
