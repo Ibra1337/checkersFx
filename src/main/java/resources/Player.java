@@ -1,15 +1,18 @@
 package resources;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.UUID;
 
-public class Player implements IPlayer  {
+public class Player extends UnicastRemoteObject implements IPlayer  {
 
     private int color;
     private boolean inGame = false;
     private String id = UUID.randomUUID().toString();
     private String gameId ;
-    public Player(int color) {
+    public Player(int color) throws RemoteException {
+        super();
         this.color = color;
     }
 

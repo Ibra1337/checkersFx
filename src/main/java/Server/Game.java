@@ -4,9 +4,11 @@ import resources.BoardLogic;
 import resources.IPlayer;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.UUID;
 
-public class Game implements   IGame {
+public class Game extends UnicastRemoteObject implements   IGame {
 
     private IPlayer blackPlayer;
     private IPlayer whitePlayer;
@@ -14,7 +16,8 @@ public class Game implements   IGame {
     private String gameId;
 
 
-    public Game(IPlayer blackPlayer, IPlayer whitePlayer) {
+    public Game(IPlayer blackPlayer, IPlayer whitePlayer) throws RemoteException {
+        super();
         this.blackPlayer = blackPlayer;
         this.whitePlayer = whitePlayer;
         gameId=UUID.randomUUID().toString();
