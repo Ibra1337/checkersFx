@@ -126,9 +126,12 @@ public class CheckersBoardView extends Scene {
                     if (board[i][j] == 3) b.setOnAction(e -> {
                         try {
                             playerMove(primaryStage , performer, b);
+                            waitForOpponentsMove(game,reg);
                         } catch (RemoteException ex) {
                             ex.printStackTrace();
                         } catch (NotBoundException ex) {
+                            ex.printStackTrace();
+                        } catch (InterruptedException ex) {
                             ex.printStackTrace();
                         }
                     }); ;
@@ -224,7 +227,6 @@ public class CheckersBoardView extends Scene {
         reg.rebind(game.getId() , game);
         displayBoard(stage,bl.getBoard());
 
-        waitForOpponentsMove(game,reg);
 
     }
 
