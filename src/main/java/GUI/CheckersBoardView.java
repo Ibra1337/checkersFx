@@ -18,6 +18,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 
 public class CheckersBoardView extends Application {
 
@@ -186,6 +187,7 @@ public class CheckersBoardView extends Application {
         bl.disp();
         clrBoard();
         game.setBL(bl);
+        IGame gameStub = (IGame) UnicastRemoteObject.exportObject(game,0);
         reg.rebind(game.getId().toString() , game);
         displayBoard(stage,bl.getBoard());
 

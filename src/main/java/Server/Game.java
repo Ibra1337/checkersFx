@@ -6,7 +6,7 @@ import resources.IPlayer;
 import java.io.Serializable;
 import java.util.UUID;
 
-public class Game implements Serializable , IGame {
+public class Game implements   IGame {
 
     private IPlayer blackPlayer;
     private IPlayer whitePlayer;

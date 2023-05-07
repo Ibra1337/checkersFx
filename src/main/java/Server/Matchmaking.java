@@ -8,6 +8,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
 public class Matchmaking implements IMatchmaking , Serializable {
@@ -40,9 +41,10 @@ public class Matchmaking implements IMatchmaking , Serializable {
             black.setInGame();
             white.setInGame();
             IGame game = new Game(black,white);
+            IGame gameStub = (IGame) UnicastRemoteObject.exportObject(game,0);
             black.setGameId(game.getId());
             white.setGameId(game.getId());
-            reg.bind(game.getId().toString() , game);
+            reg.bind(game.getId().toString() , gameStub);
             game.getBl().getBoard()[4][4] = 1;
             games.add(game);
             System.out.println("game has been created: " +blackQueue.size() +";"+ whiteQueue.size());
