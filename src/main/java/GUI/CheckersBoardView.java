@@ -98,8 +98,7 @@ public class CheckersBoardView extends Scene {
      * @param board
      * @param performer
      */
-    public void displayBoard(Stage primaryStage , int[][] board , CircleButton performer)
-    {
+    public void displayBoard(Stage primaryStage , int[][] board , CircleButton performer) throws RemoteException {
         GridPane root = new GridPane();
         for (int i = 0; i < board.length ; i++) {
             for (int j = 0; j < 8; j++) {
@@ -146,18 +145,7 @@ public class CheckersBoardView extends Scene {
                     root.add(rect, j, i);
                 }
             }
-            if (movePerformed)
-            {
-                try {
-                    waitForOpponentsMove(game,reg);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (NotBoundException e) {
-                    e.printStackTrace();
-                }
-            }
+
 
         }
 
@@ -208,6 +196,18 @@ public class CheckersBoardView extends Scene {
                         rect.setFill(Color.BLACK);
                     }
                     root.add(rect, j, i);
+                }
+            }
+            if (game.getPlayersRound() != player)
+            {
+                try {
+                    waitForOpponentsMove(game,reg);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (NotBoundException e) {
+                    e.printStackTrace();
                 }
             }
         }
