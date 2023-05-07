@@ -21,6 +21,6 @@ public interface IGame extends Remote , Serializable {
     public void setBL(BoardLogic bl)throws RemoteException;
 
     String getId()throws RemoteException;
-    void  playerRoundChange();
+    void  playerRoundChange() throws RemoteException;
     public int getPlayersRound() throws  RemoteException;
 }
