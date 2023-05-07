@@ -22,26 +22,12 @@ public class CheckersBoardView extends Scene {
     private final int TILE_SIZE = 50;
 
 
-
     IGame game;
+
     Registry reg;
     int player =1;
 
 
-    public void waitForOpponent(IPlayer p ) throws NotBoundException, RemoteException, InterruptedException {
-        p  = (IPlayer) reg.lookup(p.getId());
-        System.out.println(p.getId());
-        while (!p.inGAme())
-        {
-            p  = (IPlayer) reg.lookup(p.getId());
-            Thread.sleep(1000);
-            System.out.println("w8 for oponent");
-        }
-    }
-
-    public IGame getGame() {
-        return game;
-    }
 
     public CheckersBoardView(Stage stage , Registry reg ,int player) throws RemoteException {
         super( new GridPane());
@@ -53,9 +39,16 @@ public class CheckersBoardView extends Scene {
             System.out.println(p.getId());
             mm.addPlayer(p);
 
-            waitForOpponent(p);
+            p  = (IPlayer) reg.lookup(p.getId());
+            System.out.println(p.getId());
+            while (!p.inGAme())
+            {
+                p  = (IPlayer) reg.lookup(p.getId());
+                Thread.sleep(1000);
+                System.out.println("w8 for oponent");
+            }
 
-            System.out.println("game found");
+            System.out.println("game found " + p.getGameId() );
             game = (IGame) reg.lookup(p.getGameId());
             BoardLogic bl = game.getBl();
             displayBoard(stage , bl.getBoard());

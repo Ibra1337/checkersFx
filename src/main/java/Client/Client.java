@@ -34,11 +34,11 @@ public class Client extends Application {
         }
     }
 
-    public static void round(CheckersBoardView bw , int color , Stage stage , Registry reg ) throws RemoteException, InterruptedException, NotBoundException {
-        IGame g = getGame(bw.getGame() , reg);
-        waitForRound(g , reg , color);
-        bw.displayBoard(stage , g.getBl().getBoard());
-    }
+//    public static void round(CheckersBoardView bw , int color , Stage stage , Registry reg ) throws RemoteException, InterruptedException, NotBoundException {
+//        IGame g = getGame(bw.getGame() , reg);
+//        waitForRound(g , reg , color);
+//        bw.displayBoard(stage , g.getBl().getBoard());
+//    }
 
     public static IGame getGame(IGame game , Registry reg) throws RemoteException, NotBoundException {
         return (IGame) reg.lookup(game.getId());
@@ -49,11 +49,6 @@ public class Client extends Application {
         Registry reg = LocateRegistry.getRegistry("192.168.220.1" , 1099);
         CheckersBoardView bw = new CheckersBoardView(stage , reg , player);
 
-        while (true)
-        {
-            round(bw,player,stage,reg);
-            Thread.sleep(1000);
-        }
 
     }
 }
