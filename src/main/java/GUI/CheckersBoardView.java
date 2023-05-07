@@ -86,10 +86,21 @@ public class CheckersBoardView extends Application {
                     if (g.getPlayersRound() == player)
                     {
                         displayBoard(primaryStage , g.getBl().getBoard());
+                        while (g.getPlayersRound()!=player)
+                        {
+                            Thread.sleep(1000);
+                            System.out.println("w8 for opponent movment");
+                        }
+                    }else
+                    {
+                        System.out.println("opponents move");
                     }
+                    Thread.sleep(1000);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 } catch (NotBoundException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
