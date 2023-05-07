@@ -17,6 +17,7 @@ public interface IGame extends Remote , Serializable {
     IPlayer getWhite() throws RemoteException;
 
     BoardLogic getBl()throws RemoteException;
+
     public void setBL(BoardLogic bl)throws RemoteException;
 
     String getId()throws RemoteException;

@@ -66,7 +66,7 @@ public class CheckersBoardView extends Application {
 
 
 
-    public CheckersBoardView(IGame game , Registry reg) {
+    public CheckersBoardView(IGame game , Registry reg) throws RemoteException {
         this.game = game;
         this.reg = reg;
         new CheckersBoardView(game.getBl());
