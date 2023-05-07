@@ -6,6 +6,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 
 public
 class Server {
@@ -30,7 +31,9 @@ class Server {
             System.out.println("IDD" + games.get(0).getId());
             while (games.size() > 0 )
             {
-
+                Scanner sc = new Scanner(System.in);
+                IGame g = (IGame) reg.lookup(sc.next());
+                g.getBl().disp();
             }
         }catch (Exception e)
         {

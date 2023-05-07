@@ -179,6 +179,7 @@ public class CheckersBoardView extends Application {
 
 
     public void playerMove(Stage stage , CircleButton curr , CircleButton dest) throws RemoteException {
+        displayBoard(stage ,game.getBl().getBoard() );
         System.out.println("move");
         System.out.println(curr.getX() +":"+ curr.getY());
         System.out.println(dest.getX()+":" + curr.getY());
