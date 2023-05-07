@@ -23,6 +23,15 @@ class Server {
             IMatchmaking mmstub = (IMatchmaking) UnicastRemoteObject.exportObject(mm,0);
 
             reg.rebind("mm",mmstub);
+            while (games.size()<1)
+            {
+                Thread.sleep(1000);
+            }
+            System.out.println("IDD" + games.get(0).getId());
+            while (games.size() > 0 )
+            {
+
+            }
         }catch (Exception e)
         {
             e.printStackTrace();

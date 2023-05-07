@@ -185,10 +185,11 @@ public class CheckersBoardView extends Application {
         bl.makeMove(curr.getX() , curr.getY() , dest.getX() , dest.getY()  );
 
         System.out.println("af");
-        bl.disp();
         clrBoard();
         game.setBL(bl);
-        IGame gameStub = (IGame) UnicastRemoteObject.exportObject(game,0);
+        System.out.println(game.getId());
+        System.out.println("==================NewBL===================");
+        game.getBl().disp();
         reg.rebind(game.getId() , game);
         displayBoard(stage,bl.getBoard());
 
