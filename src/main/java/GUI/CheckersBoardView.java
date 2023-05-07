@@ -29,14 +29,15 @@ public class CheckersBoardView extends Application {
     IGame game;
     BoardLogic bl;
     Registry reg;
-
+    int player =1;
     public CheckersBoardView(BoardLogic bl) {
         this.bl = bl;
     }
+
     public CheckersBoardView() throws RemoteException {
         try {
             reg = LocateRegistry.getRegistry("192.168.220.1" , 1099);
-            IPlayer p = new Player(1);
+            IPlayer p = new Player(player);
             IMatchmaking mm = (IMatchmaking) reg.lookup("mm");
             System.out.println(p.getId());
             mm.addPlayer(p);
@@ -75,6 +76,7 @@ public class CheckersBoardView extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         displayBoard(primaryStage , bl.getBoard());
+
     }
 
     private void clrBoard()
@@ -222,6 +224,7 @@ public class CheckersBoardView extends Application {
         System.out.println(game.getId());
         System.out.println("==================NewBL===================");
         game.getBl().disp();
+        game.playerRoundChange();
         reg.rebind(game.getId() , game);
         displayBoard(stage,bl.getBoard());
 

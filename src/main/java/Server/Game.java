@@ -14,6 +14,7 @@ public class Game extends UnicastRemoteObject implements   IGame {
     private IPlayer whitePlayer;
     private BoardLogic bl;
     private String gameId;
+    private int playersRound =1;
 
 
     public Game(IPlayer blackPlayer, IPlayer whitePlayer) throws RemoteException {
@@ -26,6 +27,10 @@ public class Game extends UnicastRemoteObject implements   IGame {
         bl = new BoardLogic();
     }
 
+    @Override
+    public int getPlayersRound() {
+        return playersRound;
+    }
 
     @Override
     public IPlayer getBlack() {
@@ -40,6 +45,11 @@ public class Game extends UnicastRemoteObject implements   IGame {
     @Override
     public String getId() {
         return gameId;
+    }
+
+    @Override
+    public void playerRoundChange() {
+        playersRound = playersRound*(-1);
     }
 
     public void setBL(BoardLogic bl) {
