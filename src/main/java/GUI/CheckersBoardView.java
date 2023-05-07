@@ -118,6 +118,8 @@ public class CheckersBoardView extends Application {
                             playerMove(primaryStage , performer, b);
                         } catch (RemoteException ex) {
                             ex.printStackTrace();
+                        } catch (NotBoundException ex) {
+                            ex.printStackTrace();
                         }
                     }); ;
                     root.add( b,j ,i );
@@ -178,7 +180,8 @@ public class CheckersBoardView extends Application {
     }
 
 
-    public void playerMove(Stage stage , CircleButton curr , CircleButton dest) throws RemoteException {
+    public void playerMove(Stage stage , CircleButton curr , CircleButton dest) throws RemoteException, NotBoundException {
+        game = (IGame) reg.lookup(game.getId());
         displayBoard(stage ,game.getBl().getBoard() );
         System.out.println("move");
         System.out.println(curr.getX() +":"+ curr.getY());
