@@ -153,19 +153,6 @@ public class CheckersBoardView extends Scene {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Checkers Board");
         primaryStage.show();
-
-        if (game.getPlayersRound() != player)
-        {
-            try {
-                waitForOpponentsMove(game,reg);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (NotBoundException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     /**
@@ -173,7 +160,10 @@ public class CheckersBoardView extends Scene {
      * @param primaryStage
      * @param board
      */
+
+
     public void displayBoard(Stage primaryStage , int[][] board) throws RemoteException {
+
         GridPane root = new GridPane();
         BoardLogic bl = game.getBl();
         for (int i = 0; i < bl.getBoard().length ; i++) {
@@ -219,18 +209,10 @@ public class CheckersBoardView extends Scene {
         primaryStage.setTitle("Checkers Board");
         primaryStage.show();
 
-        if (game.getPlayersRound() != player)
-        {
-            try {
-                waitForOpponentsMove(game,reg);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (NotBoundException e) {
-                e.printStackTrace();
-            }
-        }
+    }
+
+    public void displayBoard(Stage stage , int[][] board , boolean fromButton) throws NotBoundException, RemoteException, InterruptedException {
+        waitForOpponentsMove(game,reg);
     }
 
 
@@ -254,7 +236,7 @@ public class CheckersBoardView extends Scene {
         reg.rebind(game.getId() , game);
         movePerformed = true;
         displayBoard(stage,bl.getBoard());
-
+        displayBoard(stage , bl.getBoard() , true);
 
     }
 
