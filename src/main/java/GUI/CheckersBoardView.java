@@ -37,7 +37,6 @@ public class CheckersBoardView extends Scene {
         this.stage = stage;
         this.player = player;
 
-
         try {
             this.reg = reg;
             IPlayer p = new Player(player);
@@ -58,12 +57,6 @@ public class CheckersBoardView extends Scene {
             game = (IGame) reg.lookup(p.getGameId());
             BoardLogic bl = game.getBl();
             displayBoard(stage , bl.getBoard());
-            if (player==1)
-                movePerformed = false;
-            else {
-                movePerformed = true;
-                waitForOpTh();
-            }
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         } catch (NotBoundException e) {
@@ -72,6 +65,13 @@ public class CheckersBoardView extends Scene {
             e.printStackTrace();
         } catch (AlreadyBoundException e) {
             e.printStackTrace();
+        }
+        if (player ==1 )
+            movePerformed=false;
+        else
+        {
+            movePerformed = true;
+            plat();
         }
 
     };
@@ -173,22 +173,6 @@ public class CheckersBoardView extends Scene {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Checkers Board");
         primaryStage.show();
-
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    waitForOpponentsMove(game , reg);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (NotBoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        Platform.runLater(t);
     }
 
     /**
@@ -259,8 +243,6 @@ public class CheckersBoardView extends Scene {
         primaryStage.show();
 
 
-
-
     }
 
     public void displayBoard(Stage stage , int[][] board , boolean fromButton) throws NotBoundException, RemoteException, InterruptedException {
@@ -269,24 +251,6 @@ public class CheckersBoardView extends Scene {
         waitForOpponentsMove(game,reg);
     }
 
-    public void waitForOpTh()
-    {
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    waitForOpponentsMove(game , reg);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (NotBoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        Platform.runLater(t);
-    }
 
     public void playerMove(Stage stage , CircleButton curr , CircleButton dest) throws RemoteException, NotBoundException, InterruptedException {
         game = (IGame) reg.lookup(game.getId());
@@ -307,9 +271,29 @@ public class CheckersBoardView extends Scene {
         System.out.println("Waiting for move from "+ game.getPlayersRound() );
         reg.rebind(game.getId() , game);
         movePerformed = true;
-        waitForOpTh();
+        displayBoard(stage,bl.getBoard() );
+       plat();
     }
 
+
+    private void plat()
+    {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    waitForOpponentsMove(game , reg);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (NotBoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        Platform.runLater(t);
+    }
 
     public void waitForOpponentsMove(IGame game , Registry reg) throws RemoteException, InterruptedException, NotBoundException {
         while (game.getPlayersRound() != player)
