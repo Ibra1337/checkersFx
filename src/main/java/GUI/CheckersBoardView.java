@@ -138,10 +138,7 @@ public class CheckersBoardView extends Scene {
                         {
                             b.setDisable(true);
                             b.setStyle( "-fx-opacity:  1 ; -fx-background-color: darkgray");
-                                    /*
-                                     -fx-opacity: 0.5; /* reduce opacity to make it darker */
-                            /*-fx-background-color: /* add a background color of your choice );
-                             */
+
                         }
                     if (board[i][j] == 3) b.setOnAction(e -> {
                         try {
@@ -217,10 +214,7 @@ public class CheckersBoardView extends Scene {
                         {
                             b.setDisable(true);
                             b.setStyle( "-fx-opacity:  1 ; -fx-background-color: darkgray");
-                                    /*
-                                     -fx-opacity: 0.5; /* reduce opacity to make it darker */
-                                    /*-fx-background-color: /* add a background color of your choice );
-                                     */
+
                         }
                     if (board[i][j] == 3) ;
                     root.add( b,j ,i );
