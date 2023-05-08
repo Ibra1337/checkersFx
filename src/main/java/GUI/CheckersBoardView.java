@@ -2,6 +2,7 @@ package GUI;
 
 import Server.IGame;
 import Server.IMatchmaking;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -73,8 +74,7 @@ public class CheckersBoardView extends Scene {
         return stage;
     }
 
-    private void clrBoard() throws RemoteException {
-        BoardLogic bl = game.getBl();
+    private void clrBoard(BoardLogic bl) throws RemoteException {
         for (int i = 0 ; i < 8;i++)
             for (int j=0 ; j< 8 ;j++)
                 if (bl.getBoard()[i][j]==3)
@@ -88,7 +88,7 @@ public class CheckersBoardView extends Scene {
         System.out.println("=======================serv======================");
         g.getBl().disp();
         //make it displaying not remove ch
-        clrBoard();
+        clrBoard(g.getBl());
         displayBoard(stage , g.getBl().putOnBoardAvMoves(p) , b);
     }
 
@@ -114,15 +114,28 @@ public class CheckersBoardView extends Scene {
                         bg = Color.BLUE;
                     }
                     CircleButton b = new CircleButton( "" ,bg , checkerColor , i , j);
-                    if (Math.abs(board[i][j] )<=2 )b.setOnAction( e -> {
-                        try {
-                            test(primaryStage ,b );
-                        } catch (RemoteException ex) {
-                            ex.printStackTrace();
-                        } catch (NotBoundException ex) {
-                            ex.printStackTrace();
+                    if (Math.abs(board[i][j] )<=2 )
+                        if (board[i][j] == player)
+                        {
+                            b.setOnAction( e -> {
+                                try {
+                                    test(primaryStage, b);
+                                } catch (RemoteException ex) {
+                                    ex.printStackTrace();
+                                } catch (NotBoundException ex) {
+                                    ex.printStackTrace();
+                                }
+                            });
+
+                        }else
+                        {
+                            b.setDisable(true);
+                            b.setStyle( "-fx-opacity:  1 ; -fx-background-color: darkgray");
+                                    /*
+                                     -fx-opacity: 0.5; /* reduce opacity to make it darker */
+                            /*-fx-background-color: /* add a background color of your choice );
+                             */
                         }
-                    });
                     if (board[i][j] == 3) b.setOnAction(e -> {
                         try {
                             playerMove(primaryStage , performer, b);
@@ -180,15 +193,28 @@ public class CheckersBoardView extends Scene {
                         bg = Color.BLUE;
                     }
                     CircleButton b = new CircleButton( "" ,bg , checkerColor , i , j);
-                    if (Math.abs(board[i][j] )<=2 )b.setOnAction( e -> {
-                        try {
-                            test(primaryStage ,b );
-                        } catch (RemoteException ex) {
-                            ex.printStackTrace();
-                        } catch (NotBoundException ex) {
-                            ex.printStackTrace();
+                    if (Math.abs(board[i][j] )<=2 )
+                        if (board[i][j] == player && game.getPlayersRound()==player)
+                        {
+                            b.setOnAction( e -> {
+                                try {
+                                    test(primaryStage, b);
+                                } catch (RemoteException ex) {
+                                    ex.printStackTrace();
+                                } catch (NotBoundException ex) {
+                                    ex.printStackTrace();
+                                }
+                            });
+
+                    }else
+                        {
+                            b.setDisable(true);
+                            b.setStyle( "-fx-opacity:  1 ; -fx-background-color: darkgray");
+                                    /*
+                                     -fx-opacity: 0.5; /* reduce opacity to make it darker */
+                                    /*-fx-background-color: /* add a background color of your choice );
+                                     */
                         }
-                    });
                     if (board[i][j] == 3) ;
                     root.add( b,j ,i );
                 } else {
@@ -209,9 +235,12 @@ public class CheckersBoardView extends Scene {
         primaryStage.setTitle("Checkers Board");
         primaryStage.show();
 
+
     }
 
     public void displayBoard(Stage stage , int[][] board , boolean fromButton) throws NotBoundException, RemoteException, InterruptedException {
+
+
         waitForOpponentsMove(game,reg);
     }
 
@@ -226,7 +255,7 @@ public class CheckersBoardView extends Scene {
         bl.makeMove(curr.getX() , curr.getY() , dest.getX() , dest.getY()  );
 
         System.out.println("af");
-        clrBoard();
+        clrBoard(bl);
         game.setBL(bl);
         System.out.println(game.getId());
         System.out.println("==================NewBL===================");
@@ -235,9 +264,22 @@ public class CheckersBoardView extends Scene {
         System.out.println("Waiting for move from "+ game.getPlayersRound() );
         reg.rebind(game.getId() , game);
         movePerformed = true;
-        displayBoard(stage,bl.getBoard());
-        displayBoard(stage , bl.getBoard() , true);
-
+        displayBoard(stage,bl.getBoard() );
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    waitForOpponentsMove(game , reg);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (NotBoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        Platform.runLater(t);
     }
 
 
