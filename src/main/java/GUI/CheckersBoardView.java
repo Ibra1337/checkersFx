@@ -290,7 +290,9 @@ public class CheckersBoardView extends Scene {
                 } catch (NotBoundException e) {
                     e.printStackTrace();
                 }
+                Thread.currentThread().interrupt();
             }
+
         });
         Platform.runLater(t);
     }
