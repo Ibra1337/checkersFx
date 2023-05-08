@@ -166,6 +166,22 @@ public class CheckersBoardView extends Scene {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Checkers Board");
         primaryStage.show();
+
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    waitForOpponentsMove(game , reg);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (NotBoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        Platform.runLater(t);
     }
 
     /**
@@ -264,22 +280,7 @@ public class CheckersBoardView extends Scene {
         System.out.println("Waiting for move from "+ game.getPlayersRound() );
         reg.rebind(game.getId() , game);
         movePerformed = true;
-        displayBoard(stage,bl.getBoard() );
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    waitForOpponentsMove(game , reg);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (NotBoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        Platform.runLater(t);
+
     }
 
 
