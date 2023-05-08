@@ -36,6 +36,10 @@ public class CheckersBoardView extends Scene {
         super( new GridPane());
         this.stage = stage;
         this.player = player;
+        if (player==1)
+            movePerformed = false;
+        else
+            movePerformed = true;
 
         try {
             this.reg = reg;
@@ -250,6 +254,22 @@ public class CheckersBoardView extends Scene {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Checkers Board");
         primaryStage.show();
+
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    waitForOpponentsMove(game , reg);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (NotBoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        Platform.runLater(t);
 
 
     }
