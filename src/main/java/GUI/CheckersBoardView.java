@@ -36,10 +36,7 @@ public class CheckersBoardView extends Scene {
         super( new GridPane());
         this.stage = stage;
         this.player = player;
-        if (player==1)
-            movePerformed = false;
-        else
-            movePerformed = true;
+
 
         try {
             this.reg = reg;
@@ -61,6 +58,12 @@ public class CheckersBoardView extends Scene {
             game = (IGame) reg.lookup(p.getGameId());
             BoardLogic bl = game.getBl();
             displayBoard(stage , bl.getBoard());
+            if (player==1)
+                movePerformed = false;
+            else {
+                movePerformed = true;
+                waitForOpTh();
+            }
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         } catch (NotBoundException e) {
@@ -255,6 +258,19 @@ public class CheckersBoardView extends Scene {
         primaryStage.setTitle("Checkers Board");
         primaryStage.show();
 
+
+
+
+    }
+
+    public void displayBoard(Stage stage , int[][] board , boolean fromButton) throws NotBoundException, RemoteException, InterruptedException {
+
+
+        waitForOpponentsMove(game,reg);
+    }
+
+    public void waitForOpTh()
+    {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -270,16 +286,7 @@ public class CheckersBoardView extends Scene {
             }
         });
         Platform.runLater(t);
-
-
     }
-
-    public void displayBoard(Stage stage , int[][] board , boolean fromButton) throws NotBoundException, RemoteException, InterruptedException {
-
-
-        waitForOpponentsMove(game,reg);
-    }
-
 
     public void playerMove(Stage stage , CircleButton curr , CircleButton dest) throws RemoteException, NotBoundException, InterruptedException {
         game = (IGame) reg.lookup(game.getId());
@@ -300,7 +307,7 @@ public class CheckersBoardView extends Scene {
         System.out.println("Waiting for move from "+ game.getPlayersRound() );
         reg.rebind(game.getId() , game);
         movePerformed = true;
-
+        waitForOpTh();
     }
 
 
