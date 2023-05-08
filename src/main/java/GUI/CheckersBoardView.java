@@ -137,7 +137,7 @@ public class CheckersBoardView extends Scene {
                         }else
                         {
                             b.setDisable(true);
-                            b.setStyle( "-fx-opacity:  1 ; -fx-background-color: darkgray");
+                            b.setStyle( "-fx-opacity:  0.5 ; -fx-background-color: darkgray");
                                     /*
                                      -fx-opacity: 0.5; /* reduce opacity to make it darker */
                             /*-fx-background-color: /* add a background color of your choice );
@@ -216,7 +216,7 @@ public class CheckersBoardView extends Scene {
                     }else
                         {
                             b.setDisable(true);
-                            b.setStyle( "-fx-opacity:  1 ; -fx-background-color: darkgray");
+                            b.setStyle( "-fx-opacity:  0,5 ; -fx-background-color: darkgray");
                                     /*
                                      -fx-opacity: 0.5; /* reduce opacity to make it darker */
                                     /*-fx-background-color: /* add a background color of your choice );
