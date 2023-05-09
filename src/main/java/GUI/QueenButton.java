@@ -8,7 +8,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
-public class CircleButton extends APiece {
+public class QueenButton extends APiece {
 
     private static final int WIDTH = 50;
     private static final int HEIGHT = 50;
@@ -17,7 +17,7 @@ public class CircleButton extends APiece {
     private int y ;
     private Rectangle rec ;
 
-    public CircleButton(String text , Color checkerCol , Color fieldCol  , int x , int y) {
+    public QueenButton(String text , Color checkerCol , Color fieldCol  , int x , int y) {
         setPrefSize(WIDTH, HEIGHT);
         this.x = x;
         this.y = y;
@@ -27,6 +27,7 @@ public class CircleButton extends APiece {
         rec = new Rectangle(HEIGHT, WIDTH, checkerCol);
         pane.getChildren().add(rec);
         pane.getChildren().add(new Circle(RADIUS, fieldCol));
+        pane.getChildren().add(new Circle(RADIUS/2 , Color.GOLD));
         Node n = pane;
         setGraphic(n);
         // make button background transparent

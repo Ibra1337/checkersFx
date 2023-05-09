@@ -45,7 +45,6 @@ public class Matchmaking implements IMatchmaking , Serializable {
             black.setGameId(game.getId());
             white.setGameId(game.getId());
             reg.bind(game.getId().toString() , game);
-            game.getBl().getBoard()[4][4] = 1;
             games.add(game);
             System.out.println("game has been created: " +blackQueue.size() +";"+ whiteQueue.size());
 

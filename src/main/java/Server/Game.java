@@ -48,8 +48,12 @@ public class Game extends UnicastRemoteObject implements   IGame {
     }
 
     @Override
-    public void playerRoundChange() {
+    public void playerRoundChange() throws RemoteException {
         playersRound = playersRound*(-1);
+    }
+
+    public void setBl(BoardLogic bl) {
+        this.bl = bl;
     }
 
     public void setBL(BoardLogic bl) {

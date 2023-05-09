@@ -5,6 +5,7 @@ import Server.IMatchmaking;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -16,8 +17,9 @@ import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
+import java.util.Map;
 
-public class CheckersBoardView extends Scene {
+public class CheckersBoardView extends Stage {
 
     private final int BOARD_SIZE = 8;
     private final int TILE_SIZE = 50;
@@ -28,18 +30,20 @@ public class CheckersBoardView extends Scene {
     Registry reg;
     int player =1;
     Stage stage;
+    Thread t ;
     private boolean movePerformed = false;
 
 
     public CheckersBoardView(Stage stage , Registry reg ,int player) throws RemoteException {
 
-        super( new GridPane());
+
         this.stage = stage;
         this.player = player;
 
         try {
             this.reg = reg;
             IPlayer p = new Player(player);
+
             IMatchmaking mm = (IMatchmaking) reg.lookup("mm");
             System.out.println(p.getId());
             mm.addPlayer(p);
@@ -88,7 +92,7 @@ public class CheckersBoardView extends Scene {
                     bl.getBoard()[i][j] = 0;
     }
 
-    public void test(Stage stage , CircleButton b ) throws RemoteException, NotBoundException {
+    public void test(Stage stage , APiece b ) throws RemoteException, NotBoundException {
         System.out.println("click");
         int[] p = {b.getX(), b.getY()};
         IGame g = (IGame) reg.lookup(game.getId() );
@@ -105,34 +109,41 @@ public class CheckersBoardView extends Scene {
      * @param board
      * @param performer
      */
-    public void displayBoard(Stage primaryStage , int[][] board , CircleButton performer) throws RemoteException {
+    public void displayBoard(Stage primaryStage , int[][] board , APiece performer) throws RemoteException {
         GridPane root = new GridPane();
         for (int i = 0; i < board.length ; i++) {
             for (int j = 0; j < 8; j++) {
                 Color bg = Color.GRAY;
                 if (board[i][j] != 0) {
                     Color checkerColor = null;
-                    if (board[i][j] == -1 )
+                    if (board[i][j] == -1 || board[i][j] ==-2)
                         checkerColor = Color.WHITE;
-                    if (board[i][j] == 1 )
+                    if (board[i][j] == 1  || board[i][j] ==2 )
                         checkerColor = Color.BLACK;
                     if (board[i][j] == 3) {
                         checkerColor = Color.BLUE;
                         bg = Color.BLUE;
                     }
-                    CircleButton b = new CircleButton( "" ,bg , checkerColor , i , j);
+                    APiece b ;
+                    if(Math.abs(board[i][j] )== 2 )
+                    {
+                        b = new QueenButton("" , bg,checkerColor,i , j);
+                    }else
+                        b = new CircleButton( "" ,bg , checkerColor , i , j);
                     if (Math.abs(board[i][j] )<=2 )
-                        if (board[i][j] == player)
+                        if (board[i][j] == player || board[i][j] == player*2)
                         {
                             b.setOnAction( e -> {
                                 try {
                                     test(primaryStage, b);
                                 } catch (RemoteException ex) {
                                     ex.printStackTrace();
-                                } catch (NotBoundException ex) {
+                                    }
+                                catch (NotBoundException ex) {
                                     ex.printStackTrace();
-                                }
-                            });
+                                    }
+                                });
+
 
                         }else
                         {
@@ -188,17 +199,22 @@ public class CheckersBoardView extends Scene {
                 Color bg = Color.GRAY;
                 if (board[i][j] != 0) {
                     Color checkerColor = null;
-                    if (board[i][j] == -1 )
+                    if (board[i][j] == -1 || board[i][j] == -2)
                         checkerColor = Color.WHITE;
-                    if (board[i][j] == 1 )
+                    if (board[i][j] == 1 || board[i][j] == 2)
                         checkerColor = Color.BLACK;
                     if (board[i][j] == 3) {
                         checkerColor = Color.BLUE;
                         bg = Color.BLUE;
                     }
-                    CircleButton b = new CircleButton( "" ,bg , checkerColor , i , j);
+                    APiece b ;
+                        if(Math.abs(board[i][j] )== 2 )
+                        {
+                            b = new QueenButton("" , bg,checkerColor,i , j);
+                        }else
+                            b = new CircleButton( "" ,bg , checkerColor , i , j);
                     if (Math.abs(board[i][j] )<=2 )
-                        if (board[i][j] == player && game.getPlayersRound()==player)
+                        if ((board[i][j] == player || board[i][j] == 2*player )  && game.getPlayersRound()==player)
                         {
                             b.setOnAction( e -> {
                                 try {
@@ -246,14 +262,14 @@ public class CheckersBoardView extends Scene {
     }
 
 
-    public void playerMove(Stage stage , CircleButton curr , CircleButton dest) throws RemoteException, NotBoundException, InterruptedException {
+    public void playerMove(Stage stage , APiece curr , APiece dest) throws RemoteException, NotBoundException, InterruptedException {
         game = (IGame) reg.lookup(game.getId());
         BoardLogic bl = game.getBl();
         displayBoard(stage ,game.getBl().getBoard() );
         System.out.println("move");
         System.out.println(curr.getX() +":"+ curr.getY());
         System.out.println(dest.getX()+":" + curr.getY());
-        bl.makeMove(curr.getX() , curr.getY() , dest.getX() , dest.getY()  );
+        bl.manMakeMove(curr.getX() , curr.getY() , dest.getX() , dest.getY()  );
 
         System.out.println("af");
         clrBoard(bl);
@@ -265,6 +281,10 @@ public class CheckersBoardView extends Scene {
         System.out.println("Waiting for move from "+ game.getPlayersRound() );
         reg.rebind(game.getId() , game);
         movePerformed = true;
+        if (bl.endOfGame())
+        {
+            this.close();
+        }
         displayBoard(stage,bl.getBoard() );
        plat();
     }
@@ -272,7 +292,7 @@ public class CheckersBoardView extends Scene {
 
     private void plat()
     {
-        Thread t = new Thread(new Runnable() {
+         t = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -294,15 +314,22 @@ public class CheckersBoardView extends Scene {
     public void waitForOpponentsMove(IGame game , Registry reg) throws RemoteException, InterruptedException, NotBoundException {
         while (game.getPlayersRound() != player)
         {
-            Thread.sleep(1000);
+            Thread.sleep(1500);
             game = (IGame) reg.lookup(game.getId());
         }
         movePerformed = false;
+        if (game.getBl().endOfGame() && !t.isInterrupted())
+        {
+            this.setScene(new LoseStage(new VBox()));
+            stage.show();
+        }
         System.out.println("opponent performed movelogeexit" +
                 "");
         displayBoard(stage,game.getBl().getBoard());
 
     }
+
+
 
     public IGame getGame() {
         return game;

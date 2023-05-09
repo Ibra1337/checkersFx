@@ -1,6 +1,9 @@
 package Client;
 
+import GUI.AskColor;
 import GUI.CheckersBoardView;
+import GUI.LoseStage;
+import GUI.WinStage;
 import Server.IGame;
 import Server.IMatchmaking;
 import javafx.application.Application;
@@ -52,8 +55,7 @@ public class Client extends Application {
     public void start(Stage stage) throws Exception {
         int player = 1;
         Registry reg = LocateRegistry.getRegistry("192.168.220.1" , 1099);
-        bw = new CheckersBoardView(stage , reg , player);
-
+        AskColor ac = new AskColor(stage , reg);
 
 
         /*

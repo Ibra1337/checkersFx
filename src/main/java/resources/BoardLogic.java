@@ -7,9 +7,6 @@ public class BoardLogic implements IBoard {
 
     //0 = empty 1 = white 2 = black
 
-    int aliveWhite = 20;
-    int aliveBlack = 20;
-
     int turn =1;
 
     String gameId;
@@ -19,6 +16,15 @@ public class BoardLogic implements IBoard {
 
 
     public BoardLogic() {
+
+        board[4][4] = -1;
+        board[2][2] = 1;
+
+        gameId = UUID.randomUUID().toString();
+    }
+
+    private void init()
+    {
         for (int i = 0; i < 8; i++) {
             for (int j =0; j<8 ; j++)
             {
@@ -48,6 +54,7 @@ public class BoardLogic implements IBoard {
         }
     }
 
+
     public List<Integer[]> getAvaliableMoves(int[] movingPiece )
     {
         int x = movingPiece[0];
@@ -56,7 +63,9 @@ public class BoardLogic implements IBoard {
         if (Math.abs(board[x][y]) == 1) {
 
             avMoves = normalCheckerMoves(x,y);
-        }else {}
+        }else {
+            avMoves = queenMoves(x,y);
+        }
         return avMoves;
     }
 
@@ -68,7 +77,9 @@ public class BoardLogic implements IBoard {
         for (var v : avMoves)
             if (v[0] >=0  && v[0] <= 7)
                 moveBoard[v[0]][v[1]] = 3 ;
-
+        System.out.println("move board ");
+        for (int i =0 ; i < 8 ; i++)
+            System.out.println(Arrays.toString(moveBoard[i]));
         return moveBoard;
     }
 
@@ -128,9 +139,9 @@ public class BoardLogic implements IBoard {
         return false;
     }
 
-    private void nmoveOneStep(int i , int j  , List<Integer[]> avMoves )
+    private void nmoveOneStep(int i , int j  , int jdir , List<Integer[]> avMoves )
     {
-        int jdir = board[i][j];
+
         int nj = j+jdir;
         int up = i+1;
         int down = i-1;
@@ -150,7 +161,20 @@ public class BoardLogic implements IBoard {
     {
         List<Integer[]> avMoves = new LinkedList<>();
 
-        nmoveOneStep(i,j, avMoves);
+        nmoveOneStep(i,j, board[i][j] ,avMoves);
+
+        for (var a : avMoves)
+            System.out.println("================="+Arrays.toString(a));
+        return avMoves;
+    }
+
+
+    public List<Integer[]> queenMoves(int i , int j)
+    {
+        List<Integer[]> avMoves = new LinkedList<>();
+
+        nmoveOneStep(i,j, -1 ,avMoves);
+        nmoveOneStep(i ,j , 1 , avMoves);
 
         for (var a : avMoves)
             System.out.println("================="+Arrays.toString(a));
@@ -159,10 +183,13 @@ public class BoardLogic implements IBoard {
 
     public boolean ifOpponent(int i , int j , int desti , int destj )
     {
-        return (board[desti][destj] == board[i][j] * -1 || board[desti][destj] == board[i][j] *-2);
+        if (Math.abs(board[i][j]) == 1)
+            return (board[desti][destj] == board[i][j] * -1 || board[desti][destj] == board[i][j] * -2 );
+        else
+            return (board[desti][destj] == board[i][j] * -1 || board[desti][destj] == board[i][j] / -2 );
     }
 
-    public void makeMove(int i , int j , int desti , int destj )
+    public void manMakeMove(int i , int j , int desti , int destj )
     {
         int piece = board[i][j];
         System.out.println(desti+":"+ destj);
@@ -174,6 +201,7 @@ public class BoardLogic implements IBoard {
             System.out.println("Bite " + (desti - idir) +":"+(destj - jdir) );
         }
         board[desti][destj] = piece;
+        updateToQueen(desti , destj);
     }
 
 
@@ -186,12 +214,43 @@ public class BoardLogic implements IBoard {
 
     public boolean isAllay(int i , int j ,int i2, int j2 )
     {
-        return (board[i][j] == board[i2][j2] || board[i][j] == board[i2][j2]*2);
-
+        if (Math.abs(board[i][j]) == 1)
+            return (board[i][j] == board[i2][j2] || board[i][j]*2 == board[i2][j2]);
+        else
+            return (board[i][j] == board[i2][j2] || board[i][j]/2 == board[i2][j2]);
     }
 
 
-    private boolean ifInBoard(int i , int j )
+    public boolean endOfGame()
+    {
+        int white=0;
+        int black=0;
+        for (int i = 0 ; i < 8 ; i++)
+        {
+            for (int j = 0; j<8 ; j++)
+            {
+                if (board[i][j] >0 )
+                    black++;
+                else if (board[i][j] <0)
+                    white++;
+            }
+        }
+        return white==0 || black ==0;
+
+    }
+
+    public void updateToQueen(int i  , int j)
+    {
+        if (j == 0 && board[i][j]==-1)
+        {
+            board[i][j] = -2;
+        }
+        if (j==7 && board[i][j] == 1)
+        {
+            board[i][j] = 2 ;
+        }
+    }
+    public boolean ifInBoard(int i , int j )
     {
         if (i>=0 && i<=7 && j>=0 && j<=7)
         {
