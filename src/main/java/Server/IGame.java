@@ -27,9 +27,8 @@ public interface IGame extends Remote , Serializable {
 
     public int getPlayersRound() throws  RemoteException;
 
-    public void disconnect() throws RemoteException;
+    public void setDisconnect(boolean state) throws RemoteException;
 
     public boolean disconnectOccurred() throws RemoteException;
 
-    public void removeFromServer(Registry reg) throws RemoteException, NotBoundException;
 }

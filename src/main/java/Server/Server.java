@@ -34,6 +34,7 @@ class Server {
                 Scanner sc = new Scanner(System.in);
                 IGame g = (IGame) reg.lookup(sc.next());
                 g.getBl().disp();
+
             }
         }catch (Exception e)
         {

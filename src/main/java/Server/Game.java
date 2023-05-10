@@ -17,7 +17,7 @@ public class Game extends UnicastRemoteObject implements   IGame {
     private BoardLogic bl;
     private String gameId;
     private int playersRound =1;
-    private boolean disconnect = false;
+    public boolean disconnect = false;
 
     public Game(IPlayer blackPlayer, IPlayer whitePlayer) throws RemoteException {
         super();
@@ -35,21 +35,15 @@ public class Game extends UnicastRemoteObject implements   IGame {
     }
 
     @Override
-    public void disconnect() throws RemoteException {
-        disconnect = false;
+    public synchronized void setDisconnect(boolean state) throws RemoteException {
+        disconnect = state;
     }
 
     @Override
-    public boolean disconnectOccurred() throws RemoteException {
+    public synchronized boolean disconnectOccurred() throws RemoteException {
         return disconnect;
     }
 
-    @Override
-    public void removeFromServer(Registry reg) throws RemoteException, NotBoundException {
-        reg.unbind(blackPlayer.getGameId());
-        reg.unbind(whitePlayer.getId());
-        reg.unbind(gameId);
-    }
 
     @Override
     public IPlayer getBlack() {

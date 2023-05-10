@@ -6,6 +6,7 @@ import GUI.EndGameStages.WinStage;
 import Server.IGame;
 import Server.IMatchmaking;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -34,11 +35,11 @@ public class CheckersBoardView extends Stage {
     Stage stage;
     Thread t ;
     private boolean movePerformed = false;
-
+    CheckersBoardView bw ;
 
     public CheckersBoardView(Stage stage , Registry reg ,int player) throws RemoteException {
 
-
+        bw = this;
         this.stage = stage;
         this.player = player;
 
@@ -68,34 +69,17 @@ public class CheckersBoardView extends Stage {
         } catch (NotBoundException | AlreadyBoundException | InterruptedException e) {
             e.printStackTrace();
         }
-        t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    waitForOpponentsMove(game , reg);
-                } catch (RemoteException | NotBoundException | InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Thread.currentThread().interrupt();
-            }
-
-        });
+        t = new Thread(w8ForOponentTask());
         if (player ==1 )
             movePerformed=false;
         else
         {
             movePerformed = true;
-            Platform.runLater(t);
+            t.start();
         }
 
         setOnCloseRequest(ev -> {
-            try {
-                t.interrupt();
-                game.disconnect();
-                System.out.println("eXitingGame Dissconnect");
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+            exit();
         });
 
     };
@@ -201,15 +185,24 @@ public class CheckersBoardView extends Stage {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Checkers Board");
         primaryStage.setOnCloseRequest(ev -> {
-            try {
-                t.interrupt();
-                game.disconnect();
-                System.out.println("eXitingGame Dissconnect");
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+            exit();
         });
         primaryStage.show();
+    }
+
+
+    private void exit()
+    {
+        try {
+            t.interrupt();
+            game.setDisconnect(true);
+            reg.rebind(game.getId() , game);
+            System.out.println("eXitingGame Dissconnect");
+            System.out.println(game.disconnectOccurred());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -217,10 +210,8 @@ public class CheckersBoardView extends Stage {
      * @param primaryStage
      * @param board
      */
-
-
     public void displayBoard(Stage primaryStage , int[][] board) throws RemoteException {
-
+        System.out.println(game.getId());
         GridPane root = new GridPane();
         BoardLogic bl = game.getBl();
         for (int i = 0; i < bl.getBoard().length ; i++) {
@@ -279,13 +270,7 @@ public class CheckersBoardView extends Stage {
         Scene scene = new Scene(root, TILE_SIZE * BOARD_SIZE, TILE_SIZE * BOARD_SIZE);
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest(ev -> {
-            try {
-                t.interrupt();
-                game.disconnect();
-                System.out.println("eXitingGame Dissconnect");
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+               exit();
         });
 
         primaryStage.setTitle("Checkers Board");
@@ -293,6 +278,8 @@ public class CheckersBoardView extends Stage {
 
 
     }
+
+
 
     public void displayBoard(Stage stage , int[][] board , boolean fromButton) throws NotBoundException, RemoteException, InterruptedException {
 
@@ -326,36 +313,56 @@ public class CheckersBoardView extends Stage {
             this.getStage().close();
             ws.show();
 
-        }else {
+        }else if(game.disconnectOccurred())
+        {
+            handleDisconnect(game);
+        } else {
             displayBoard(stage, bl.getBoard());
-            Platform.runLater(t);
+            t= new Thread(w8ForOponentTask());
+            t.start();
         }
     }
 
 
-
+    public Task<Integer> w8ForOponentTask()
+    {
+        Task<Integer> task = new Task<Integer>() {
+            @Override
+            protected Integer call() throws Exception {
+                waitForOpponentsMove(game,reg);
+                return 0;
+            }
+        } ;
+        task.setOnScheduled( e->{
+            try {
+                waitForOpponentsMove(game,reg);
+            } catch (RemoteException ex) {
+                ex.printStackTrace();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            } catch (NotBoundException ex) {
+                ex.printStackTrace();
+            }
+        });
+        return task;
+    }
 
 
     public void waitForOpponentsMove(IGame game , Registry reg) throws RemoteException, InterruptedException, NotBoundException {
-
+        System.out.println("wainting for !!!!!!!!!");
         while (game.getPlayersRound() != player&& !game.disconnectOccurred() && !t.isInterrupted())
         {
-            Thread.sleep(1500);
             game = (IGame) reg.lookup(game.getId());
+            Thread.sleep(1000);
         }
         movePerformed = false;
         if (game.getBl().endOfGame() )
         {
-            this.getStage().close();
+            this.getStage().hide();
             LoseStage ls = new LoseStage(new VBox());
             ls.show();
-            game.removeFromServer(reg);
         }else if (game.disconnectOccurred()) {
-            System.out.println("opppDisconnected");
-            game.removeFromServer(reg);
-            Platform.exit();
-            DisconnectStage disS = new DisconnectStage();
-            disS.show();
+            handleDisconnect(game);
         }
         else {
             System.out.println("opponent performed movelogeexit" );
@@ -364,6 +371,13 @@ public class CheckersBoardView extends Stage {
     }
 
 
+    public void handleDisconnect(IGame game) throws NotBoundException, RemoteException {
+        System.out.println("opppDisconnected");
+        this.getStage().close();
+        bw.getStage().close();
+        DisconnectStage disS = new DisconnectStage();
+        disS.show();
+    }
 
 
     public IGame getGame() {
