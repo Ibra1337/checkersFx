@@ -11,10 +11,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class LoseStage extends Scene {
+public class LoseStage extends Stage {
 
     public LoseStage(VBox root) {
-        super(root);
         Text text = new Text("You lose 😔");
         text.setFont(Font.font("Arial", 24));
         ImageView imageView = new ImageView(new Image("https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/271/white-frowning-face_2639-fe0f.png"));
@@ -29,6 +28,9 @@ public class LoseStage extends Scene {
         root.setStyle("-fx-alignment: center; -fx-padding: 20px;");
 
         Scene scene = new Scene(root);
+
+        this.setScene(scene);
+        this.show();
 
     }
 }

@@ -9,10 +9,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class WinStage extends Scene {
+public class WinStage extends Stage {
 
     public WinStage(VBox root) {
-        super(root);
 
         Text winText = new Text("You win! 🏆");
         winText.setFont(Font.font("Arial", 24));
@@ -25,6 +24,9 @@ public class WinStage extends Scene {
         root.setStyle("-fx-alignment: center; -fx-padding: 20px;");
 
 
+        Scene scene = new Scene(root);
+        this.setScene(scene);
+        this.show();
 
 
     }

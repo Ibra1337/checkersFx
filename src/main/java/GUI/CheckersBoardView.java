@@ -3,6 +3,7 @@ package GUI;
 import Server.IGame;
 import Server.IMatchmaking;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -70,14 +71,30 @@ public class CheckersBoardView extends Stage {
         } catch (AlreadyBoundException e) {
             e.printStackTrace();
         }
+        t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    waitForOpponentsMove(game , reg);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (NotBoundException e) {
+                    e.printStackTrace();
+                }
+                Thread.currentThread().interrupt();
+            }
+
+        });
         if (player ==1 )
             movePerformed=false;
         else
         {
             movePerformed = true;
-            plat();
+            Platform.runLater(t);
         }
-
+        Task
     };
 
 
@@ -283,33 +300,19 @@ public class CheckersBoardView extends Stage {
         movePerformed = true;
         if (bl.endOfGame())
         {
-            this.close();
+            WinStage ws = new WinStage(new VBox());
+            this.getStage().close();
+            ws.show();
+
+        }else {
+            displayBoard(stage, bl.getBoard());
+            Platform.runLater(t);
         }
-        displayBoard(stage,bl.getBoard() );
-       plat();
     }
 
 
-    private void plat()
-    {
-         t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    waitForOpponentsMove(game , reg);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (NotBoundException e) {
-                    e.printStackTrace();
-                }
-                Thread.currentThread().interrupt();
-            }
 
-        });
-        Platform.runLater(t);
-    }
+
 
     public void waitForOpponentsMove(IGame game , Registry reg) throws RemoteException, InterruptedException, NotBoundException {
         while (game.getPlayersRound() != player)
@@ -320,13 +323,14 @@ public class CheckersBoardView extends Stage {
         movePerformed = false;
         if (game.getBl().endOfGame() && !t.isInterrupted())
         {
-            this.setScene(new LoseStage(new VBox()));
-            stage.show();
+            this.getStage().close();
+            LoseStage ls = new LoseStage(new VBox());
+            ls.show();
+        }else {
+            System.out.println("opponent performed movelogeexit" +
+                    "");
+            displayBoard(stage, game.getBl().getBoard());
         }
-        System.out.println("opponent performed movelogeexit" +
-                "");
-        displayBoard(stage,game.getBl().getBoard());
-
     }
 
 
