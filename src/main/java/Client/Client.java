@@ -2,21 +2,14 @@ package Client;
 
 import GUI.AskColor;
 import GUI.CheckersBoardView;
-import GUI.LoseStage;
-import GUI.WinStage;
 import Server.IGame;
-import Server.IMatchmaking;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import resources.IPlayer;
-import resources.Player;
 
-import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.Scanner;
 
 public class Client extends Application {
 

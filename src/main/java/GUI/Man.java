@@ -2,13 +2,12 @@ package GUI;
 
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
-public class CircleButton extends APiece {
+public class Man extends APiece {
 
     private static final int WIDTH = 50;
     private static final int HEIGHT = 50;
@@ -17,7 +16,7 @@ public class CircleButton extends APiece {
     private int y ;
     private Rectangle rec ;
 
-    public CircleButton(String text , Color checkerCol , Color fieldCol  , int x , int y) {
+    public Man(String text , Color checkerCol , Color fieldCol  , int x , int y) {
         setPrefSize(WIDTH, HEIGHT);
         this.x = x;
         this.y = y;

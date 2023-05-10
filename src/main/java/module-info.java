@@ -8,4 +8,6 @@ module com.example.checkersfx {
     exports GUI;
     exports Server;
     exports Client;
+    exports GUI.EndGameStages;
+    opens GUI.EndGameStages to javafx.fxml;
 }

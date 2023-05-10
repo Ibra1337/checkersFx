@@ -4,7 +4,9 @@ import resources.BoardLogic;
 import resources.IPlayer;
 
 import java.io.Serializable;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.UUID;
 
@@ -15,7 +17,7 @@ public class Game extends UnicastRemoteObject implements   IGame {
     private BoardLogic bl;
     private String gameId;
     private int playersRound =1;
-
+    private boolean disconnect = false;
 
     public Game(IPlayer blackPlayer, IPlayer whitePlayer) throws RemoteException {
         super();
@@ -30,6 +32,23 @@ public class Game extends UnicastRemoteObject implements   IGame {
     @Override
     public int getPlayersRound() {
         return playersRound;
+    }
+
+    @Override
+    public void disconnect() throws RemoteException {
+        disconnect = false;
+    }
+
+    @Override
+    public boolean disconnectOccurred() throws RemoteException {
+        return disconnect;
+    }
+
+    @Override
+    public void removeFromServer(Registry reg) throws RemoteException, NotBoundException {
+        reg.unbind(blackPlayer.getGameId());
+        reg.unbind(whitePlayer.getId());
+        reg.unbind(gameId);
     }
 
     @Override
@@ -52,6 +71,8 @@ public class Game extends UnicastRemoteObject implements   IGame {
         playersRound = playersRound*(-1);
     }
 
+
+
     public void setBl(BoardLogic bl) {
         this.bl = bl;
     }
@@ -69,4 +90,6 @@ public class Game extends UnicastRemoteObject implements   IGame {
     {
         this.bl = bl;
     }
+
+
 }

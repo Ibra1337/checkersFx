@@ -1,4 +1,4 @@
-package GUI;
+package GUI.EndGameStages;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
