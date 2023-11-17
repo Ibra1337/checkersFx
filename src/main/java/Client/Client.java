@@ -47,7 +47,7 @@ public class Client extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         int player = 1;
-        Registry reg = LocateRegistry.getRegistry("192.168.220.1" , 1099);
+        Registry reg = LocateRegistry.getRegistry("xxx.xxx.xxx. , 1099);
         AskColor ac = new AskColor(stage , reg);
 
 
