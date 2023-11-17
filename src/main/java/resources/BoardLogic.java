@@ -17,8 +17,7 @@ public class BoardLogic implements IBoard {
 
     public BoardLogic() {
 
-        board[4][4] = -1;
-        board[2][2] = 1;
+        init();
 
         gameId = UUID.randomUUID().toString();
     }

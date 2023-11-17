@@ -349,7 +349,6 @@ public class CheckersBoardView extends Stage {
 
 
     public void waitForOpponentsMove(IGame game , Registry reg) throws RemoteException, InterruptedException, NotBoundException {
-        System.out.println("wainting for !!!!!!!!!");
         while (game.getPlayersRound() != player&& !game.disconnectOccurred() && !t.isInterrupted())
         {
             game = (IGame) reg.lookup(game.getId());
@@ -365,14 +364,12 @@ public class CheckersBoardView extends Stage {
             handleDisconnect(game);
         }
         else {
-            System.out.println("opponent performed movelogeexit" );
             displayBoard(stage, game.getBl().getBoard());
         }
     }
 
 
     public void handleDisconnect(IGame game) throws NotBoundException, RemoteException {
-        System.out.println("opppDisconnected");
         this.getStage().close();
         bw.getStage().close();
         DisconnectStage disS = new DisconnectStage();
